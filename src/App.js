@@ -1,25 +1,58 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [city, setCity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [weatherData, setWeatherData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchWeatherData = async () => {
+    if (!city) return;
+    setLoading(true);
+    setError(null);
+    setWeatherData(null);
+
+    try {
+      const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=ccebf3db3c7245a7b2e81525240506&q=${city}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch weather data');
+      }
+      const data = await response.json();
+      setWeatherData(data);
+    } catch (error) {
+      setError(error.message);
+      alert(error.message)
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Weather App</h1>
+      <input
+        type="text"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        placeholder="Enter city name"
+      />
+      <button onClick={fetchWeatherData}>Search</button>
+      {loading && <p>Loading data…</p>}
+      {error && <p className="error">{error}</p>}
+      {weatherData && (
+        <div className="weather-cards">
+          <div className="weather-card">
+            <h2>{weatherData.location.name}</h2>
+            <p>Temperature: {weatherData.current.temp_c} °C</p>
+            <p>Humidity: {weatherData.current.humidity} %</p>
+            <p>Condition: {weatherData.current.condition.text}</p>
+            <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
