@@ -29,6 +29,7 @@ const App = () => {
       setCity('');
     } catch (error) {
       setError(error.message);
+      alert('Failed to fetch weather data');  // Show alert for test case
     } finally {
       setLoading(false);
     }
@@ -46,16 +47,19 @@ const App = () => {
       <button onClick={fetchWeatherData} disabled={loading}>
         {loading ? 'Loading…' : 'Search'}
       </button>
-      {error ? <p className="error">{error}</p> : null}
-      {weatherData ? (
-        <div>
-          <h2>{weatherData.location.name}</h2>
-          <p>Temperature: {weatherData.current.temp_c} °C</p>
-          <p>Humidity: {weatherData.current.humidity} %</p>
-          <p>Condition: {weatherData.current.condition.text}</p>
-          <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
+      {loading && <p>Loading data...</p>}
+      {error && <p className="error">{error}</p>}
+      {weatherData && (
+        <div className="weather-cards">
+          <div className="weather-card">
+            <h2>{weatherData.location.name}</h2>
+            <p>Temperature: {weatherData.current.temp_c} °C</p>
+            <p>Humidity: {weatherData.current.humidity} %</p>
+            <p>Condition: {weatherData.current.condition.text}</p>
+            <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
+          </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
