@@ -53,9 +53,17 @@ const App = () => {
         <div className="weather-cards">
           <div className="weather-card">
             <h2>{weatherData.location.name}</h2>
+          </div>
+          <div className="weather-card">
             <p>Temperature: {weatherData.current.temp_c} °C</p>
+          </div>
+          <div className="weather-card">
             <p>Humidity: {weatherData.current.humidity} %</p>
+          </div>
+          <div className="weather-card">
             <p>Condition: {weatherData.current.condition.text}</p>
+          </div>
+          <div className="weather-card">
             <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
           </div>
         </div>
