@@ -52,9 +52,6 @@ const App = () => {
       {weatherData && (
         <div className="weather-cards">
           <div className="weather-card">
-            <h2>{weatherData.location.name}</h2>
-          </div>
-          <div className="weather-card">
             <p>Temperature: {weatherData.current.temp_c} °C</p>
           </div>
           <div className="weather-card">
