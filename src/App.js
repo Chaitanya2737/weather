@@ -8,7 +8,10 @@ const App = () => {
   const [error, setError] = useState(null);
 
   const fetchWeatherData = async () => {
-    if (!city) return;
+    if (!city.trim()) {
+      setError('Please enter a city name');
+      return;
+    }
     setLoading(true);
     setError(null);
     setWeatherData(null);
@@ -19,7 +22,11 @@ const App = () => {
         throw new Error('Failed to fetch weather data');
       }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
       setWeatherData(data);
+      setCity('');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -36,29 +43,19 @@ const App = () => {
         onChange={(e) => setCity(e.target.value)}
         placeholder="Enter city name"
       />
-      <button onClick={fetchWeatherData}>Search</button>
-      {loading && <p>Loading data…</p>}
-      {error && <p className="error">{error}</p>}
-      {weatherData && (<div>
-
-      <div>
-        <h2>{weatherData.location.name}</h2>
-      </div>
-      <div>
-        <p>Temperature: {weatherData.current.temp_c} °C</p>
-      </div>
-      <div>
-        <p>Humidity: {weatherData.current.humidity} %</p>
-      </div>
-      <div>
-        <p>Condition: {weatherData.current.condition.text}</p>
-      </div>
-      <div>
-        <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
-      </div>
-      </div>
-)}
-
+      <button onClick={fetchWeatherData} disabled={loading}>
+        {loading ? 'Loading…' : 'Search'}
+      </button>
+      {error ? <p className="error">{error}</p> : null}
+      {weatherData ? (
+        <div>
+          <h2>{weatherData.location.name}</h2>
+          <p>Temperature: {weatherData.current.temp_c} °C</p>
+          <p>Humidity: {weatherData.current.humidity} %</p>
+          <p>Condition: {weatherData.current.condition.text}</p>
+          <p>Wind Speed: {weatherData.current.wind_kph} kph</p>
+        </div>
+      ) : null}
     </div>
   );
 };
